@@ -37,8 +37,12 @@ int main()
        }else{
             close(pipefd[0]);          /* Close unused read end */
        
+            char *argv[]= {"ls","campur2/*.txt",NULL};
+            execv("/bin/ls", argv);
+           
             write(pipefd[1], argv[1], strlen(argv[1]));
-            close(pipefd[1]);          /* Reader will see EOF */
+            close(pipefd[1]);          /* Reader will see EOF */        
+           
             wait(NULL);                /* Wait for child */
             exit(EXIT_SUCCESS);    
        }
