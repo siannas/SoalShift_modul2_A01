@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <pwd.h>
@@ -33,28 +34,29 @@ int main(){
         close(STDIN_FILENO);
         close(STDOUT_FILENO);
         close(STDERR_FILENO);
-    
+
         struct stat st;
-        char str[17];
+        char str[25];
+        char loc[] = "/home/vagrant/prak2/soal2/hatiku/elen.ku";
 
         while(1){
-            stat("/home/vagrant/prak2/soal2/hatiku/elen.ku", &st);
-            struct passwd *pw = getpwuid(st.st_uid);
-            struct group *gr = getgrgid(st.st_gid);
+            if(stat(loc, &st) != -1){
+                struct passwd *pw = getpwuid(st.st_uid);
+                struct group *gr = getgrgid(st.st_gid);
 
-            sprintf(str,"%s%s", pw->pw_name,gr->gr_name);
-            //      printf("%s\n", str);
+                sprintf(str,"%s%s", pw->pw_name,gr->gr_name);
 
-            if( !strcmp(str, "www-datawww-data") ){
-                    char *argv[] = {"chmod","777","/home/vagrant/prak2/soal2/hatiku/elen.ku",NULL};
-                    execv("bin/chmod", argv);
+                if( !strcmp(str, "www-datawww-data") ){
+  
+                        char mode[] = "0777";
+                        int i = strtol(mode, 0, 8);
 
-                    //delete
-                    char *argv2[] = {"rm","/home/vagrant/prak2/soal2/hatiku/elen.ku",NULL};
-                    execv("/bin/rm", argv2);
+                        if(chmod (loc, i) >=0 ){
+                                remove(loc);
+                        }
+                }
             }
-            
         }
 
-        exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS);
 }

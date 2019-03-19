@@ -4,56 +4,80 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
+
+int cfileexists(const char * filename){
+    FILE *file;
+    if (file = fopen(filename, "r")){
+        fclose(file);
+        return 1;
+    }
+    return 0;
+}
 
 int main()
 {
-   pid_t cpid;
-   char buf;
+    int pipefd[2];
+    pid_t cpid2;
+    pid_t cpid;
+    int fd;
 
-   if (pipe(pipefd) == -1) {
-       perror("pipe");
-       exit(EXIT_FAILURE);
-   }
+    cpid = fork();
+    if (cpid == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
 
-   cpid = fork();
-   if (cpid == -1) {
-       perror("fork");
-       exit(EXIT_FAILURE);
-   }
+    if (pipe(pipefd) == -1) {
+        perror("pipe");
+        exit(EXIT_FAILURE);
+    }
 
    if (cpid == 0) {    /* Child reads from pipe */
-       int pipefd[2];
-       pid_t cpid2;
-       cpid2 = fork();
-       
-       if(cpid == 0){
-           close(pipefd[1]);          /* Close unused write end */
-            while (read(pipefd[0], &buf, 1) > 0)
-                    write(STDOUT_FILENO, &buf, 1);
+        char* fname = "/home/vagrant/prak2/soal3/campur2.zip";
 
-            write(STDOUT_FILENO, "\n", 1);
-            close(pipefd[0]);
-            _exit(EXIT_SUCCESS);                
-       }else{
+        if(!cfileexists(fname)){
+                perror("NO FILE");
+                exit(EXIT_FAILURE);
+        }
+      //  char *argv[]= {"unzip",fname,NULL};
+       // execv("/usr/bin/unzip", argv);
+        
+        _exit(EXIT_SUCCESS);   
+       
+   } else {            
+        wait(NULL);
+        cpid2 = fork();
+       
+        if(cpid2 == 0){
+                
             close(pipefd[0]);          /* Close unused read end */
-       
-            char *argv[]= {"ls","campur2/*.txt",NULL};
-            execv("/bin/ls", argv);
-           
-            write(pipefd[1], argv[1], strlen(argv[1]));
+            dup2(pipefd[1], STDOUT_FILENO);
             close(pipefd[1]);          /* Reader will see EOF */        
-           
-            wait(NULL);                /* Wait for child */
-            exit(EXIT_SUCCESS);    
-       }
-       
 
-   } else {            /* Parent writes argv[1] to pipe */
+            char *argv[]= {"ls","/home/vagrant/prak2/soal3/campur2/",NULL};
+            execv("/bin/ls", argv);
+            
+            _exit(EXIT_SUCCESS);                
+        }
+        else{
+            wait(NULL);
 
-       char *argv[]= {"unzip","campur2.zip",NULL};
-       execv("/bin/unzip", argv);
-       
-       wait(NULL);                /* Wait for child */
-       exit(EXIT_SUCCESS);
+            char* filename = "./daftar.txt";
+            mode_t mode = S_IRUSR | S_IWUSR;
+            fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, mode);
+
+            close(pipefd[1]);
+
+            dup2(pipefd[0], STDIN_FILENO);
+            dup2(fd, STDOUT_FILENO);
+            
+            close(pipefd[0]);
+            close(fd);
+            
+            execlp("grep","grep",".txt$",NULL);
+            
+            exit(EXIT_SUCCESS);
+        }
    }
 }
