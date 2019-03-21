@@ -40,8 +40,8 @@ int main()
                 perror("NO FILE");
                 exit(EXIT_FAILURE);
         }
-      //  char *argv[]= {"unzip",fname,NULL};
-       // execv("/usr/bin/unzip", argv);
+       char *argv[]= {"unzip",fname,NULL};
+       execv("/usr/bin/unzip", argv);
         
         _exit(EXIT_SUCCESS);   
        
