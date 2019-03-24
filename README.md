@@ -138,11 +138,7 @@ barulah pada parent process, kita mengclose pipe untuk write dan menduplikasi pi
 ---
 Dalam direktori /home/[user]/Documents/makanan terdapat file makan_enak.txt yang       berisikan daftar makanan terkenal di Surabaya. Elen sedang melakukan diet dan           seringkali tergiur untuk membaca isi makan_enak.txt karena ngidam makanan enak.          Sebagai teman yang baik, Anda membantu Elen dengan membuat program C yang            berjalan setiap 5 detik untuk memeriksa apakah file makan_enak.txt pernah dibuka           setidaknya 30 detik yang lalu (rentang 0 - 30 detik). Jika file itu pernah dibuka, program Anda akan membuat 1 file makan_sehat#.txt di             direktori /home/[user]/Documents/makanan dengan '#' berisi bilangan bulat dari 1         sampai tak hingga untuk mengingatkan Elen agar berdiet
 
-Contoh: File makan_enak.txt terakhir dibuka pada detik ke-1 Pada detik ke-10 terdapat file makan_sehat1.txt dan makan_sehat2.txt 
-3/14/2019 Soal Shift Modul 2 - Google Dokumen
-https://docs.google.com/document/d/1OyQL7uNpg36ykwTYZjVaGGIwz0D9qGnRtZILcmQmo3A/edit 3/3
- 
-Catatan:  - dilarang menggunakan crontab - Contoh nama file : makan_sehat1.txt, makan_sehat2.txt, dst
+Contoh: File makan_enak.txt terakhir dibuka pada detik ke-1 Pada detik ke-10 terdapat file makan_sehat1.txt dan makan_sehat2.txt
 
 Penjelasan
 
